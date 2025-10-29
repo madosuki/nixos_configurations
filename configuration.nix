@@ -234,7 +234,13 @@
     apparmor-profiles
     apparmor-utils
     apparmor-parser
-    sddm-astronaut
+    (sddm-astronaut.override {
+	embeddedTheme = "hyprland_kath";	
+	#themeConfig = {
+	#	BackGround = "";
+	#	Font = "";
+	#};
+    })
     evince
   ];
 
@@ -261,7 +267,6 @@
     enableSSHSupport = true;
     pinentryPackage = pkgs.pinentry-all;
   };
-
 
   # List services that you want to enable:
 
