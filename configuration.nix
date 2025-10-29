@@ -74,7 +74,21 @@
   # Enable the GNOME Desktop Environment.
   # services.xserver.displayManager.gdm.enable = true;
   # services.xserver.desktopManager.gnome.enable = true;
-  services.displayManager.sddm.enable = true;
+  services.displayManager.sddm = {
+	enable = true;
+ 	extraPackages = with pkgs; [
+		sddm-astronaut
+      		kdePackages.qtbase
+      		kdePackages.qtwayland
+      		kdePackages.qtmultimedia
+	];
+	theme = "sddm-astronaut-theme";
+	settings = {
+		Theme = {
+			Current = "sddm-astronaut-theme";
+		};
+	};
+  };
   
 
   # Configure keymap in X11
@@ -124,6 +138,12 @@
   security.polkit.enable = true;
   services.flatpak.enable = true;
   xdg.portal.enable = true;
+
+  security.apparmor.packages = with pkgs; [ apparmor-profiles ];
+  security.apparmor = {
+	enable = true;
+	policies.firefox.path = "${pkgs.apparmor-profiles}/etc/apparmor.d/firefox";
+  };
 
   programs.nix-ld.enable = true;
   programs.nix-ld.libraries = with pkgs; [
@@ -210,6 +230,12 @@
     libarchive
     uv
     veracrypt
+    pinentry-all
+    apparmor-profiles
+    apparmor-utils
+    apparmor-parser
+    sddm-astronaut
+    evince
   ];
 
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
