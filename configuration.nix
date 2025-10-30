@@ -246,6 +246,8 @@
     evince
     zip
     unzip
+    texliveFull
+    thunderbird
   ];
 
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
