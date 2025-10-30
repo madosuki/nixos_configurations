@@ -26,6 +26,8 @@
   };
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
+  services.udisks2.enable = true;
+
   # networking.hostName = "nixos"; # Define your hostname.
   # Pick only one of the below networking options.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -242,6 +244,8 @@
 	#};
     })
     evince
+    zip
+    unzip
   ];
 
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
