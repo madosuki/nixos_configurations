@@ -213,7 +213,6 @@
 	];
     })
     tmux
-    zsh
     nix-ld
     appimage-run
     gnumake
@@ -257,10 +256,10 @@
     apparmor-parser
     (sddm-astronaut.override {
 	embeddedTheme = "hyprland_kath";	
-	#themeConfig = {
-	#	BackGround = "";
+	themeConfig = {
+		Background = "${builtins.path { path = /home/user/Pictures/wallpaper.png; name = "wallpaper"; }}";
 	#	Font = "";
-	#};
+	};
     })
     evince
     zip
