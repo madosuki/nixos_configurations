@@ -25,6 +25,8 @@
 	};
   };
   boot.kernelPackages = pkgs.linuxPackages_latest;
+  # kvm_amd is only using with AMD CPU. When intel cpu, replace kvm_intel.
+  # boot.extraModprobeConfig = "options kvm_amd nested=1";
 
   services.udisks2.enable = true;
 
@@ -64,7 +66,7 @@
   fonts.packages = with pkgs; [
 	noto-fonts
 	noto-fonts-cjk-sans
-	noto-fonts-emoji
+        noto-fonts-cjk-serif
         noto-fonts-color-emoji
 	font-awesome
   ];
@@ -104,6 +106,7 @@
   # Enable sound.
   # services.pulseaudio.enable = true;
   # OR
+  security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
@@ -118,7 +121,7 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.user = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "video" "audio" "libvirtd" "docker" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "networkmanager" "video" "audio" "libvirtd" "docker" "vboxusers" "kvm" "adbusers" ]; # Enable ‘sudo’ for the user.
     packages = with pkgs; [
       tree
     ];
@@ -132,14 +135,22 @@
   programs.virt-manager.enable = true;
   users.groups.libvirtd.members = [ "user" ];
   virtualisation.libvirtd.enable = true;
+  virtualisation.libvirtd.qemu = {
+	swtpm.enable = true;
+  };
   virtualisation.spiceUSBRedirection.enable = true;
   virtualisation.docker = {
   	enable = true;
   };
+  virtualisation.virtualbox.host.enable = true;
+
+  programs.adb.enable = true;
 
   security.polkit.enable = true;
   services.flatpak.enable = true;
   xdg.portal.enable = true;
+
+  services.gnome.gnome-keyring.enable = true;
 
   security.apparmor.packages = with pkgs; [ apparmor-profiles ];
   security.apparmor = {
@@ -150,6 +161,7 @@
   programs.nix-ld.enable = true;
   programs.nix-ld.libraries = with pkgs; [
   	stdenv.cc.cc.lib
+	glib
 	zlib
 	zstd
 	curl
@@ -163,6 +175,8 @@
 	util-linux
 	xz
 	systemd
+	cairo
+	mesa
   ];
 
   services.clamav.daemon.enable = true;
@@ -192,7 +206,12 @@
     polkit_gnome
     kdePackages.dolphin
     adwaita-icon-theme
-    chromium
+    (chromium.override {
+	commandLineArgs = [
+	"--ozone-platform=x11"
+	"--force-device-scale=1"
+	];
+    })
     tmux
     zsh
     nix-ld
@@ -207,7 +226,8 @@
     gdb
     xsel
     wl-clipboard
-    libgccjit
+    gcc
+    libgcc
     emacs
     gimp
     inkscape
@@ -221,7 +241,6 @@
     libpng
     libjpeg
     giflib
-    texinfo
     zlib
     harfbuzz
     gumbo
@@ -248,6 +267,11 @@
     unzip
     texliveFull
     thunderbird
+    nil
+    bind
+    htop
+    mpv
+    ghidra
   ];
 
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
