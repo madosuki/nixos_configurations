@@ -234,21 +234,9 @@
     vscodium
     clamav
     mold-wrapped
-    mupdf
     imagemagick
     fontconfig
-    libpng
-    libjpeg
-    giflib
-    zlib
-    harfbuzz
-    gumbo
-    leptonica
-    tesseract
-    zxing
-    openjpeg
     libarchive
-    uv
     veracrypt
     pinentry-all
     apparmor-profiles
@@ -271,6 +259,9 @@
     htop
     mpv
     ghidra
+    rhythmbox
+    spotify
+    psmisc
   ];
 
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
