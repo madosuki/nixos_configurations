@@ -14,19 +14,21 @@
   # boot.loader.systemd-boot.enable = true;
 
   boot.loader = {
-	efi = {
-		canTouchEfiVariables = true;
-		efiSysMountPoint = "/boot/efi";
-	};
-	grub = {
-		enable = true;
-		efiSupport = true;
-		device = "nodev";
-	};
+    efi = {
+        canTouchEfiVariables = true;
+        efiSysMountPoint = "/boot/efi";
+    };
+    grub = {
+        enable = true;
+        efiSupport = true;
+        device = "nodev";
+    };
   };
   boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelParams = [ "kvm.enable_virt_at_load=0" ];
   # kvm_amd is only using with AMD CPU. When intel cpu, replace kvm_intel.
   # boot.extraModprobeConfig = "options kvm_amd nested=1";
+  # boot.extraModprobeConfig = "options kvm.enable_virt_at_load=0";
 
   services.udisks2.enable = true;
 
@@ -43,7 +45,7 @@
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   networking.firewall = {
-  	enable = true;
+      enable = true;
   };
 
   # Select internationalisation properties.
@@ -54,21 +56,23 @@
     useXkbConfig = true; # use xkb.options in tty.
   };
   i18n.inputMethod = {
-	enable = true;
-	type = "fcitx5";
-	fcitx5.addons = with pkgs; [
-		fcitx5-mozc
-		fcitx5-gtk
-	];
-	fcitx5.waylandFrontend = true;
+    enable = true;
+    type = "fcitx5";
+    fcitx5.addons = with pkgs; [
+        fcitx5-mozc
+        fcitx5-hangul
+        fcitx5-rime
+        fcitx5-gtk
+    ];
+    fcitx5.waylandFrontend = true;
   };
 
   fonts.packages = with pkgs; [
-	noto-fonts
-	noto-fonts-cjk-sans
+    noto-fonts
+    noto-fonts-cjk-sans
         noto-fonts-cjk-serif
         noto-fonts-color-emoji
-	font-awesome
+    font-awesome
   ];
 
   # Enable the X11 windowing system.
@@ -79,19 +83,19 @@
   # services.xserver.displayManager.gdm.enable = true;
   # services.xserver.desktopManager.gnome.enable = true;
   services.displayManager.sddm = {
-	enable = true;
- 	extraPackages = with pkgs; [
-		sddm-astronaut
-      		kdePackages.qtbase
-      		kdePackages.qtwayland
-      		kdePackages.qtmultimedia
-	];
-	theme = "sddm-astronaut-theme";
-	settings = {
-		Theme = {
-			Current = "sddm-astronaut-theme";
-		};
-	};
+    enable = true;
+     extraPackages = with pkgs; [
+        sddm-astronaut
+              kdePackages.qtbase
+              kdePackages.qtwayland
+              kdePackages.qtmultimedia
+    ];
+    theme = "sddm-astronaut-theme";
+    settings = {
+        Theme = {
+            Current = "sddm-astronaut-theme";
+        };
+    };
   };
   
 
@@ -124,23 +128,29 @@
     extraGroups = [ "wheel" "networkmanager" "video" "audio" "libvirtd" "docker" "vboxusers" "kvm" "adbusers" ]; # Enable ‘sudo’ for the user.
     packages = with pkgs; [
       tree
+      steghide
+      gobuster
     ];
   };
 
   programs.chromium.enable = true;
   programs.firefox.enable = true;
   programs.hyprland.enable = true;
+  programs.steam = {
+    enable = true;
+    gamescopeSession.enable = true;
+  };
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
   programs.virt-manager.enable = true;
   users.groups.libvirtd.members = [ "user" ];
   virtualisation.libvirtd.enable = true;
   virtualisation.libvirtd.qemu = {
-	swtpm.enable = true;
+    swtpm.enable = true;
   };
   virtualisation.spiceUSBRedirection.enable = true;
   virtualisation.docker = {
-  	enable = true;
+      enable = true;
   };
   virtualisation.virtualbox.host.enable = true;
 
@@ -154,35 +164,37 @@
 
   security.apparmor.packages = with pkgs; [ apparmor-profiles ];
   security.apparmor = {
-	enable = true;
-	policies.firefox.path = "${pkgs.apparmor-profiles}/etc/apparmor.d/firefox";
+    enable = true;
+    policies.firefox.path = "${pkgs.apparmor-profiles}/etc/apparmor.d/firefox";
+        policies.thunderbird.path = "${pkgs.apparmor-profiles}/etc/apparmor.d/thunderbird";
+        policies.flatpak.path = "${pkgs.apparmor-profiles}/etc/apparmor.d/flatpak";
   };
 
   programs.nix-ld.enable = true;
   programs.nix-ld.libraries = with pkgs; [
-  	stdenv.cc.cc.lib
-	glib
-	zlib
-	zstd
-	curl
-	openssl
-	attr
-	libssh
-	bzip2
-	libxml2
-	acl
-	libsodium
-	util-linux
-	xz
-	systemd
-	cairo
-	mesa
+    stdenv.cc.cc.lib
+    zlib
+    zstd
+    curl
+    openssl
+    attr
+    libssh
+    bzip2
+    libxml2
+    acl
+    libsodium
+    util-linux
+    xz
+    systemd
+    cairo
+    mesa
   ];
 
   services.clamav.daemon.enable = true;
   services.clamav.updater.enable = true;
 
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.overlays = [ (import /home/user/Documents/my_overlay/overlay.nix)  ];
 
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
@@ -203,14 +215,15 @@
     waybar
     networkmanagerapplet
     hyprpaper
+    hyprlock
     polkit_gnome
     kdePackages.dolphin
     adwaita-icon-theme
     (chromium.override {
-	commandLineArgs = [
-	"--ozone-platform=x11"
-	"--force-device-scale=1"
-	];
+    commandLineArgs = [
+    "--ozone-platform=x11"
+    "--force-device-scale=1"
+    ];
     })
     tmux
     nix-ld
@@ -218,22 +231,13 @@
     gnumake
     desktop-file-utils
     whois
-    autoconf
-    automake
-    autogen 
-    clang-tools
-    gdb
     xsel
     wl-clipboard
-    gcc
-    libgcc
     emacs
     gimp
     inkscape
-    cmake
     vscodium
     clamav
-    mold-wrapped
     imagemagick
     fontconfig
     libarchive
@@ -243,11 +247,11 @@
     apparmor-utils
     apparmor-parser
     (sddm-astronaut.override {
-	embeddedTheme = "hyprland_kath";	
-	themeConfig = {
-		Background = "${builtins.path { path = /home/user/Pictures/wallpaper.png; name = "wallpaper"; }}";
-	#	Font = "";
-	};
+    embeddedTheme = "hyprland_kath";    
+    themeConfig = {
+        Background = "${builtins.path { path = /home/user/Pictures/wallpaper.png; name = "wallpaper"; }}";
+    #    Font = "";
+    };
     })
     evince
     zip
@@ -259,24 +263,31 @@
     htop
     mpv
     ghidra
-    rhythmbox
     spotify
     psmisc
+    steam-run
+    android-studio
+    ((ffmpeg_8-full.override { withUnfree = true; withGPL = true; }).overrideAttrs (_: { doCheck = false; }))
+    guile
+    protonup-qt
+    rhythmbox
+    nix-prefetch-git
+    # jdim
   ];
 
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
   systemd.user.services.polkit-gnome-authentication-agent-1 = {
-	description = "polkit-gnome-authentication-agent-1";
-	wantedBy = [ "graphical-session.target" ];
-	wants = [ "graphical-session.target" ];
-	after = [ "graphical-session.target" ];
-	serviceConfig = {
-		Type = "simple";
-		ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
-		Restart = "on-failure";
-		RestartSec = 1;
-		TimeoutStopSec = 10;
-	};
+    description = "polkit-gnome-authentication-agent-1";
+    wantedBy = [ "graphical-session.target" ];
+    wants = [ "graphical-session.target" ];
+    after = [ "graphical-session.target" ];
+    serviceConfig = {
+        Type = "simple";
+        ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+        Restart = "on-failure";
+        RestartSec = 1;
+        TimeoutStopSec = 10;
+    };
   };
 
   # Some programs need SUID wrappers, can be configured further or are
