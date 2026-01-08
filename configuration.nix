@@ -25,7 +25,10 @@
     };
   };
   boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.kernelParams = [ "kvm.enable_virt_at_load=0" ];
+  boot.kernelParams = [ 
+    "kvm.enable_virt_at_load=0"
+    # "amd_iommu"
+  ];
   # kvm_amd is only using with AMD CPU. When intel cpu, replace kvm_intel.
   # boot.extraModprobeConfig = "options kvm_amd nested=1";
   # boot.extraModprobeConfig = "options kvm.enable_virt_at_load=0";
@@ -125,7 +128,7 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.user = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "video" "audio" "libvirtd" "docker" "vboxusers" "kvm" "adbusers" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "networkmanager" "video" "audio" "libvirtd" "docker" "vboxusers" "kvm" "adbusers" "input" ]; # Enable ‘sudo’ for the user.
     packages = with pkgs; [
       tree
       steghide
@@ -154,7 +157,7 @@
   };
   virtualisation.virtualbox.host.enable = true;
 
-  programs.adb.enable = true;
+  # programs.adb.enable = true;
 
   security.polkit.enable = true;
   services.flatpak.enable = true;
@@ -218,6 +221,7 @@
     hyprlock
     polkit_gnome
     kdePackages.dolphin
+    kdePackages.ark
     adwaita-icon-theme
     (chromium.override {
     commandLineArgs = [
@@ -267,11 +271,13 @@
     psmisc
     steam-run
     android-studio
+    android-tools
     ((ffmpeg_8-full.override { withUnfree = true; withGPL = true; }).overrideAttrs (_: { doCheck = false; }))
     guile
     protonup-qt
     rhythmbox
     nix-prefetch-git
+    multimarkdown
     # jdim
   ];
 
