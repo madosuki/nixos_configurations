@@ -73,9 +73,10 @@
   fonts.packages = with pkgs; [
     noto-fonts
     noto-fonts-cjk-sans
-        noto-fonts-cjk-serif
-        noto-fonts-color-emoji
+    noto-fonts-cjk-serif
+    noto-fonts-color-emoji
     font-awesome
+    hackgen-font
   ];
 
   # Enable the X11 windowing system.
@@ -125,6 +126,10 @@
   # Enable touchpad support (enabled default in most desktopManager).
   services.libinput.enable = true;
 
+  services.power-profiles-daemon.enable = true;
+
+  services.gvfs.enable = true;
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.user = {
     isNormalUser = true;
@@ -161,7 +166,11 @@
 
   security.polkit.enable = true;
   services.flatpak.enable = true;
-  xdg.portal.enable = true;
+  xdg.portal = {
+    enable = true;
+  };
+  xdg.menus.enable = true;
+  xdg.mime.enable = true;
 
   services.gnome.gnome-keyring.enable = true;
 
@@ -219,14 +228,17 @@
     networkmanagerapplet
     hyprpaper
     hyprlock
+    hypridle
     polkit_gnome
-    kdePackages.dolphin
     kdePackages.ark
+    kdePackages.kate
+    kdePackages.gwenview
+    pcmanfm
     adwaita-icon-theme
     (chromium.override {
     commandLineArgs = [
-    "--ozone-platform=x11"
-    "--force-device-scale=1"
+    # "--ozone-platform=x11"
+    # "--force-device-scale=1"
     ];
     })
     tmux
@@ -237,7 +249,7 @@
     whois
     xsel
     wl-clipboard
-    emacs
+    emacs-pgtk
     gimp
     inkscape
     vscodium
@@ -266,10 +278,11 @@
     bind
     htop
     mpv
-    ghidra
+    # ghidra
     spotify
     psmisc
     steam-run
+    android-file-transfer
     android-studio
     android-tools
     ((ffmpeg_8-full.override { withUnfree = true; withGPL = true; }).overrideAttrs (_: { doCheck = false; }))
@@ -278,6 +291,10 @@
     rhythmbox
     nix-prefetch-git
     multimarkdown
+    gemini-cli
+    gnome-disk-utility
+    unityhub
+    wireshark
     # jdim
   ];
 
