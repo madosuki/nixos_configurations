@@ -70,14 +70,25 @@
     fcitx5.waylandFrontend = true;
   };
 
-  fonts.packages = with pkgs; [
-    noto-fonts
-    noto-fonts-cjk-sans
-    noto-fonts-cjk-serif
-    noto-fonts-color-emoji
-    font-awesome
-    hackgen-font
-  ];
+  fonts = {
+    packages = with pkgs; [
+      noto-fonts
+      noto-fonts-cjk-sans
+      noto-fonts-cjk-serif
+      noto-fonts-color-emoji
+      font-awesome
+      # hackgen-font
+    ];
+
+    fontconfig = {
+      enable = true;
+      defaultFonts = {
+        serif = [ "Noto Serif CJK JP" ];
+        sansSerif = [ "Noto Sans CJK JP" ];
+      };
+    };
+  };
+
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
@@ -295,6 +306,13 @@
     gnome-disk-utility
     unityhub
     wireshark
+    slurp
+    grim
+    (heroic.override {
+      extraPkgs = pkgs: [
+        pkgs.gamescope
+      ];
+    })
     # jdim
   ];
 
