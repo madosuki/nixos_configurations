@@ -26,12 +26,15 @@
   };
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.kernelParams = [ 
-    "kvm.enable_virt_at_load=0"
+    # "kvm.enable_virt_at_load=0"
     # "amd_iommu"
   ];
   # kvm_amd is only using with AMD CPU. When intel cpu, replace kvm_intel.
   # boot.extraModprobeConfig = "options kvm_amd nested=1";
   # boot.extraModprobeConfig = "options kvm.enable_virt_at_load=0";
+
+  hardware.firmware = [
+  ];
 
   services.udisks2.enable = true;
 
@@ -144,7 +147,7 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.user = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "video" "audio" "libvirtd" "docker" "vboxusers" "kvm" "adbusers" "input" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "networkmanager" "video" "render" "audio" "libvirtd" "docker" "vboxusers" "kvm" "adbusers" "input" ]; # Enable ‘sudo’ for the user.
     packages = with pkgs; [
       tree
       steghide
@@ -171,9 +174,7 @@
   virtualisation.docker = {
       enable = true;
   };
-  virtualisation.virtualbox.host.enable = true;
-
-  # programs.adb.enable = true;
+  # virtualisation.virtualbox.host.enable = true;
 
   security.polkit.enable = true;
   services.flatpak.enable = true;
@@ -216,7 +217,10 @@
   services.clamav.daemon.enable = true;
   services.clamav.updater.enable = true;
 
+  services.pcscd.enable = true;
+
   nixpkgs.config.allowUnfree = true;
+  hardware.enableRedistributableFirmware = true;
   nixpkgs.overlays = [ (import /home/user/Documents/my_overlay/overlay.nix)  ];
 
   # List packages installed in system profile.
@@ -289,7 +293,7 @@
     bind
     htop
     mpv
-    # ghidra
+    ghidra
     spotify
     psmisc
     steam-run
@@ -301,6 +305,7 @@
     protonup-qt
     rhythmbox
     nix-prefetch-git
+    nix-prefetch-github
     multimarkdown
     gemini-cli
     gnome-disk-utility
@@ -313,6 +318,19 @@
         pkgs.gamescope
       ];
     })
+    libsixel
+    pcsc-tools
+    fastfetch
+    usbutils
+    v4l-utils
+    # epgstation
+    # mirakurun
+
+    # my overlay
+    libaribb25-tsukumijima
+    recisdb
+    edcb
+    mirakc
     # jdim
   ];
 
