@@ -25,9 +25,11 @@
     };
   };
   boot.kernelPackages = pkgs.linuxPackages_latest;
+  # boot.kernelPackages = pkgs.linuxPackages;
   boot.kernelParams = [ 
     # "kvm.enable_virt_at_load=0"
-    # "amd_iommu"
+    "amd_iommu=on"
+    "iommu=pt"
   ];
   # kvm_amd is only using with AMD CPU. When intel cpu, replace kvm_intel.
   # boot.extraModprobeConfig = "options kvm_amd nested=1";
@@ -147,7 +149,7 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.user = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "video" "render" "audio" "libvirtd" "docker" "vboxusers" "kvm" "adbusers" "input" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "networkmanager" "usb" "video" "render" "audio" "libvirtd" "docker" "vboxusers" "kvm" "adbusers" "input" "pcscd" "plugdev" ]; # Enable ‘sudo’ for the user.
     packages = with pkgs; [
       tree
       steghide
@@ -217,7 +219,14 @@
   services.clamav.daemon.enable = true;
   services.clamav.updater.enable = true;
 
-  services.pcscd.enable = true;
+  services.pcscd = {
+    enable = true;
+  };
+  services.udev.packages = [ pkgs.pcsclite ];
+  services.udev.extraRules = ''
+  # SCR3310-NTTCom SmartCard Reader
+  SUBSYSTEM=="usb", ATTRS{idVendor}=="04e6", ATTRS{idProduct}=="511a", GROUP="pcscd", MODE="0664"
+  '';
 
   nixpkgs.config.allowUnfree = true;
   hardware.enableRedistributableFirmware = true;
@@ -331,6 +340,8 @@
     recisdb
     edcb
     mirakc
+    mirakc-arib
+    roswell-overlay
     # jdim
   ];
 
