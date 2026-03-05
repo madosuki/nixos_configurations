@@ -196,25 +196,25 @@
         policies.flatpak.path = "${pkgs.apparmor-profiles}/etc/apparmor.d/flatpak";
   };
 
-  programs.nix-ld.enable = true;
-  programs.nix-ld.libraries = with pkgs; [
-    stdenv.cc.cc.lib
-    zlib
-    zstd
-    curl
-    openssl
-    attr
-    libssh
-    bzip2
-    libxml2
-    acl
-    libsodium
-    util-linux
-    xz
-    systemd
-    cairo
-    mesa
-  ];
+  # programs.nix-ld.enable = true;
+  # programs.nix-ld.libraries = with pkgs; [
+  #   stdenv.cc.cc.lib
+  #   zlib
+  #   zstd
+  #   curl
+  #   openssl
+  #   attr
+  #   libssh
+  #   bzip2
+  #   libxml2
+  #   acl
+  #   libsodium
+  #   util-linux
+  #   xz
+  #   systemd
+  #   cairo
+  #   mesa
+  # ];
 
   services.clamav.daemon.enable = true;
   services.clamav.updater.enable = true;
@@ -236,6 +236,7 @@
   # You can use https://search.nixos.org/ to find more packages (and options).
   environment.systemPackages = with pkgs; [
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    jq
     wget
     kitty 
     gh
