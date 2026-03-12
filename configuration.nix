@@ -102,10 +102,11 @@
   # Enable the GNOME Desktop Environment.
   # services.xserver.displayManager.gdm.enable = true;
   # services.xserver.desktopManager.gnome.enable = true;
+  services.desktopManager.plasma6.enable = true;
   # services.displayManager.plasma-login-manager = {
   #   enable = true;
   # };
-   services.displayManager.sddm = {
+  services.displayManager.sddm = {
     enable = true;
      extraPackages = with pkgs; [
         sddm-astronaut
@@ -118,9 +119,8 @@
         Theme = {
             Current = "sddm-astronaut-theme";
         };
-     };
+      };
   };
-  
 
   # Configure keymap in X11
   services.xserver.xkb.layout = "us";
@@ -162,7 +162,10 @@
 
   programs.chromium.enable = true;
   programs.firefox.enable = true;
-  programs.hyprland.enable = true;
+  programs.hyprland = {
+    enable = true;
+    # withUWSM = true;
+  };
   programs.steam = {
     enable = true;
     gamescopeSession.enable = true;
@@ -291,6 +294,7 @@
     apparmor-profiles
     apparmor-utils
     apparmor-parser
+    uwsm
     (sddm-astronaut.override {
     embeddedTheme = "hyprland_kath";    
     themeConfig = {
@@ -365,7 +369,7 @@
   #   };
   # };
 
-  systemd.user.services.polkit-kde-agent = {
+  systemd.user.services.polkit-kde-agent-1 = {
     description = "KDE Polkit Authentication Agent";
     wantedBy = [ "graphical-session.target" ];
     wants = [ "graphical-session.target" ];
