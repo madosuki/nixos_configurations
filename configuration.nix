@@ -1,4 +1,4 @@
-# Edit this configuration file to define what should be installed on
+#  Edit this configuration file to define what should be installed on
 # your system. Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
@@ -102,7 +102,10 @@
   # Enable the GNOME Desktop Environment.
   # services.xserver.displayManager.gdm.enable = true;
   # services.xserver.desktopManager.gnome.enable = true;
-  services.displayManager.sddm = {
+  # services.displayManager.plasma-login-manager = {
+  #   enable = true;
+  # };
+   services.displayManager.sddm = {
     enable = true;
      extraPackages = with pkgs; [
         sddm-astronaut
@@ -115,7 +118,7 @@
         Theme = {
             Current = "sddm-astronaut-theme";
         };
-    };
+     };
   };
   
 
@@ -186,7 +189,7 @@
   xdg.menus.enable = true;
   xdg.mime.enable = true;
 
-  services.gnome.gnome-keyring.enable = true;
+  # services.gnome.gnome-keyring.enable = true;
 
   security.apparmor.packages = with pkgs; [ apparmor-profiles ];
   security.apparmor = {
@@ -254,7 +257,8 @@
     hyprpaper
     hyprlock
     hypridle
-    polkit_gnome
+    # polkit_gnome
+    kdePackages.polkit-kde-agent-1
     kdePackages.ark
     kdePackages.kate
     kdePackages.gwenview
@@ -347,19 +351,34 @@
   ];
 
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
-  systemd.user.services.polkit-gnome-authentication-agent-1 = {
-    description = "polkit-gnome-authentication-agent-1";
+  # systemd.user.services.polkit-gnome-authentication-agent-1 = {
+  #   description = "polkit-gnome-authentication-agent-1";
+  #   wantedBy = [ "graphical-session.target" ];
+  #   wants = [ "graphical-session.target" ];
+  #   after = [ "graphical-session.target" ];
+  #   serviceConfig = {
+  #       Type = "simple";
+  #       ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+  #       Restart = "on-failure";
+  #       RestartSec = 1;
+  #       TimeoutStopSec = 10;
+  #   };
+  # };
+
+  systemd.user.services.polkit-kde-agent = {
+    description = "KDE Polkit Authentication Agent";
     wantedBy = [ "graphical-session.target" ];
     wants = [ "graphical-session.target" ];
     after = [ "graphical-session.target" ];
     serviceConfig = {
-        Type = "simple";
-        ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
-        Restart = "on-failure";
-        RestartSec = 1;
-        TimeoutStopSec = 10;
+      Type = "simple";
+      ExecStart = "${pkgs.kdePackages.polkit-kde-agent-1}/libexec/polkit-kde-authentication-agent-1";
+      Restart = "on-failure";
+      RestartSec = 1;
+      TimeoutStopSec = 10;
     };
   };
+  
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
