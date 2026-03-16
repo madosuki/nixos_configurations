@@ -108,7 +108,7 @@
   # };
   services.displayManager.sddm = {
     enable = true;
-     extraPackages = with pkgs; [
+    extraPackages = with pkgs; [
         sddm-astronaut
               kdePackages.qtbase
               kdePackages.qtwayland
@@ -169,6 +169,10 @@
   programs.steam = {
     enable = true;
     gamescopeSession.enable = true;
+  };
+  programs.gamescope = {
+    enable = true;
+    capSysNice = false;
   };
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
@@ -268,6 +272,7 @@
     pcmanfm
     adwaita-icon-theme
     (chromium.override {
+    enableWideVine = true;
     commandLineArgs = [
     # "--ozone-platform=x11"
     # "--force-device-scale=1"
@@ -331,16 +336,19 @@
     wireshark
     slurp
     grim
-    (heroic.override {
-      extraPkgs = pkgs: [
-        pkgs.gamescope
-      ];
-    })
+    heroic
+    gamescope-wsi
+    # (heroic.override {
+    #   extraPkgs = pkgs: [
+    #     pkgs.gamescope
+    #   ];
+    # })
     libsixel
     pcsc-tools
     fastfetch
     usbutils
     v4l-utils
+    nkf
     # epgstation
     # mirakurun
 
@@ -351,7 +359,7 @@
     mirakc
     mirakc-arib
     roswell-overlay
-    # jdim
+    jdim
   ];
 
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
