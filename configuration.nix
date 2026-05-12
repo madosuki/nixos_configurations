@@ -4,11 +4,26 @@
 
 { config, lib, pkgs, ... }:
 
+let
+  aagl = import (builtins.fetchTarball "https://github.com/ezKEa/aagl-gtk-on-nix/archive/main.tar.gz");
+in
 {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      aagl.module
     ];
+
+  nix.settings = {
+     experimental-features = [ "nix-command" "flakes" ];
+     substituters = [ "https://ezkea.cachix.org" ];
+     trusted-public-keys = [ "ezkea.cachix.org-1:ioBmUbJTZIKsHmWWXPe1FSFbeVe+afhfgqgTSNd34eI=" ];
+  };
+  # programs.anime-game-launcher.enable = true;
+  # programs.anime-games-launcher.enable = true;
+  programs.honkers-railway-launcher.enable = true;
+  # programs.honkers-launcher.enable = true;
+  # programs.sleepy-launcher.enable = true;
 
   # Use the systemd-boot EFI boot loader.
   # boot.loader.systemd-boot.enable = true;
@@ -24,8 +39,8 @@
         device = "nodev";
     };
   };
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-  # boot.kernelPackages = pkgs.linuxPackages;
+  # boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxPackages;
   boot.kernelParams = [ 
     # "kvm.enable_virt_at_load=0"
     "amd_iommu=on"
@@ -84,6 +99,8 @@
       font-awesome
       # hackgen-font
     ];
+ 
+    fontDir.enable = true;
 
     fontconfig = {
       enable = true;
@@ -103,24 +120,24 @@
   # services.xserver.displayManager.gdm.enable = true;
   # services.xserver.desktopManager.gnome.enable = true;
   services.desktopManager.plasma6.enable = true;
-  # services.displayManager.plasma-login-manager = {
-  #   enable = true;
-  # };
-  services.displayManager.sddm = {
+  services.displayManager.plasma-login-manager = {
     enable = true;
-    extraPackages = with pkgs; [
-        sddm-astronaut
-              kdePackages.qtbase
-              kdePackages.qtwayland
-              kdePackages.qtmultimedia
-    ];
-    theme = "sddm-astronaut-theme";
-    settings = {
-        Theme = {
-            Current = "sddm-astronaut-theme";
-        };
-      };
   };
+  # services.displayManager.sddm = {
+  #   enable = true;
+  #   extraPackages = with pkgs; [
+  #       sddm-astronaut
+  #             kdePackages.qtbase
+  #             kdePackages.qtwayland
+  #             kdePackages.qtmultimedia
+  #   ];
+  #   theme = "sddm-astronaut-theme";
+  #   settings = {
+  #       Theme = {
+  #           Current = "sddm-astronaut-theme";
+  #       };
+  #     };
+  # };
 
   # Configure keymap in X11
   services.xserver.xkb.layout = "us";
@@ -186,7 +203,8 @@
   virtualisation.docker = {
       enable = true;
   };
-  # virtualisation.virtualbox.host.enable = true;
+  virtualisation.virtualbox.host.enable = true;
+  users.extraGroups.vboxusers.members = [ "user" ];
 
   security.polkit.enable = true;
   services.flatpak.enable = true;
@@ -198,13 +216,13 @@
 
   # services.gnome.gnome-keyring.enable = true;
 
-  security.apparmor.packages = with pkgs; [ apparmor-profiles ];
-  security.apparmor = {
-    enable = true;
-    policies.firefox.path = "${pkgs.apparmor-profiles}/etc/apparmor.d/firefox";
-        policies.thunderbird.path = "${pkgs.apparmor-profiles}/etc/apparmor.d/thunderbird";
-        policies.flatpak.path = "${pkgs.apparmor-profiles}/etc/apparmor.d/flatpak";
-  };
+  # security.apparmor.packages = with pkgs; [ apparmor-profiles ];
+  # security.apparmor = {
+  #   enable = true;
+  #   policies.firefox.path = "${pkgs.apparmor-profiles}/etc/apparmor.d/firefox";
+  #       policies.thunderbird.path = "${pkgs.apparmor-profiles}/etc/apparmor.d/thunderbird";
+  #       policies.flatpak.path = "${pkgs.apparmor-profiles}/etc/apparmor.d/flatpak";
+  # };
 
   programs.nix-ld.enable = true;
   # programs.nix-ld.libraries = with pkgs; [
@@ -251,6 +269,7 @@
     kitty 
     gh
     _7zz
+    p7zip
     git
     keepassxc
     vlc
@@ -326,6 +345,7 @@
     ((ffmpeg_8-full.override { withUnfree = true; withGPL = true; }).overrideAttrs (_: { doCheck = false; }))
     guile
     protonup-qt
+    protonplus
     rhythmbox
     nix-prefetch-git
     nix-prefetch-github
@@ -349,8 +369,15 @@
     usbutils
     v4l-utils
     nkf
-    # epgstation
-    # mirakurun
+    sqlite
+    openmsx
+    keybase-gui
+    libretro.fbneo
+    retroarch
+    rar
+    win2xcur
+    cabextract
+    davinci-resolve
 
     # my overlay
     libaribb25-tsukumijima
@@ -417,7 +444,6 @@
   # accidentally delete configuration.nix.
   # system.copySystemConfiguration = true;
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   # This option defines the first version of NixOS you have installed on this particular machine,
   # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.
