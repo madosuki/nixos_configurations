@@ -39,8 +39,8 @@ in
         device = "nodev";
     };
   };
-  # boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.kernelPackages = pkgs.linuxPackages;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+  # boot.kernelPackages = pkgs.linuxPackages;
   boot.kernelParams = [ 
     # "kvm.enable_virt_at_load=0"
     "amd_iommu=on"
@@ -120,24 +120,24 @@ in
   # services.xserver.displayManager.gdm.enable = true;
   # services.xserver.desktopManager.gnome.enable = true;
   services.desktopManager.plasma6.enable = true;
-  services.displayManager.plasma-login-manager = {
-    enable = true;
-  };
-  # services.displayManager.sddm = {
+  # services.displayManager.plasma-login-manager = {
   #   enable = true;
-  #   extraPackages = with pkgs; [
-  #       sddm-astronaut
-  #             kdePackages.qtbase
-  #             kdePackages.qtwayland
-  #             kdePackages.qtmultimedia
-  #   ];
-  #   theme = "sddm-astronaut-theme";
-  #   settings = {
-  #       Theme = {
-  #           Current = "sddm-astronaut-theme";
-  #       };
-  #     };
   # };
+  services.displayManager.sddm = {
+    enable = true;
+    extraPackages = with pkgs; [
+        sddm-astronaut
+              kdePackages.qtbase
+              kdePackages.qtwayland
+              kdePackages.qtmultimedia
+    ];
+    theme = "sddm-astronaut-theme";
+    settings = {
+        Theme = {
+            Current = "sddm-astronaut-theme";
+        };
+      };
+  };
 
   # Configure keymap in X11
   services.xserver.xkb.layout = "us";
@@ -217,12 +217,13 @@ in
   # services.gnome.gnome-keyring.enable = true;
 
   # security.apparmor.packages = with pkgs; [ apparmor-profiles ];
-  # security.apparmor = {
-  #   enable = true;
-  #   policies.firefox.path = "${pkgs.apparmor-profiles}/etc/apparmor.d/firefox";
-  #       policies.thunderbird.path = "${pkgs.apparmor-profiles}/etc/apparmor.d/thunderbird";
-  #       policies.flatpak.path = "${pkgs.apparmor-profiles}/etc/apparmor.d/flatpak";
-  # };
+  security.apparmor = {
+    enable = true;
+    killUnconfinedConfinables = true;
+    policies.firefox.path = "${pkgs.apparmor-profiles}/etc/apparmor.d/firefox";
+    policies.thunderbird.path = "${pkgs.apparmor-profiles}/etc/apparmor.d/thunderbird";
+    policies.flatpak.path = "${pkgs.apparmor-profiles}/etc/apparmor.d/flatpak";
+  };
 
   programs.nix-ld.enable = true;
   # programs.nix-ld.libraries = with pkgs; [
@@ -288,6 +289,7 @@ in
     kdePackages.ark
     kdePackages.kate
     kdePackages.gwenview
+    kdePackages.qt6ct
     pcmanfm
     adwaita-icon-theme
     (chromium.override {
