@@ -4,26 +4,15 @@
 
 { config, lib, pkgs, ... }:
 
-let
-  aagl = import (builtins.fetchTarball "https://github.com/ezKEa/aagl-gtk-on-nix/archive/main.tar.gz");
-in
 {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      aagl.module
     ];
 
   nix.settings = {
      experimental-features = [ "nix-command" "flakes" ];
-     substituters = [ "https://ezkea.cachix.org" ];
-     trusted-public-keys = [ "ezkea.cachix.org-1:ioBmUbJTZIKsHmWWXPe1FSFbeVe+afhfgqgTSNd34eI=" ];
   };
-  # programs.anime-game-launcher.enable = true;
-  # programs.anime-games-launcher.enable = true;
-  programs.honkers-railway-launcher.enable = true;
-  # programs.honkers-launcher.enable = true;
-  # programs.sleepy-launcher.enable = true;
 
   # Use the systemd-boot EFI boot loader.
   # boot.loader.systemd-boot.enable = true;
@@ -119,7 +108,7 @@ in
   # Enable the GNOME Desktop Environment.
   # services.xserver.displayManager.gdm.enable = true;
   # services.xserver.desktopManager.gnome.enable = true;
-  services.desktopManager.plasma6.enable = true;
+  # services.desktopManager.plasma6.enable = true;
   # services.displayManager.plasma-login-manager = {
   #   enable = true;
   # };
@@ -268,6 +257,7 @@ in
     jq
     wget
     kitty 
+    ghostty
     gh
     _7zz
     p7zip
@@ -277,6 +267,7 @@ in
     neovim
     btrfs-progs
     fuzzel
+    rofi
     pavucontrol
     swaynotificationcenter
     waybar
@@ -290,6 +281,8 @@ in
     kdePackages.kate
     kdePackages.gwenview
     kdePackages.qt6ct
+    kdePackages.kwallet
+    kdePackages.kwalletmanager
     pcmanfm
     adwaita-icon-theme
     (chromium.override {
@@ -344,6 +337,8 @@ in
     android-file-transfer
     android-studio
     android-tools
+    mkvtoolnix
+    mediainfo
     ((ffmpeg_8-full.override { withUnfree = true; withGPL = true; }).overrideAttrs (_: { doCheck = false; }))
     guile
     protonup-qt
