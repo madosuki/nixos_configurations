@@ -158,7 +158,7 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.user = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "usb" "video" "render" "audio" "libvirtd" "docker" "vboxusers" "kvm" "adbusers" "input" "pcscd" "plugdev" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "networkmanager" "usb" "video" "render" "audio" "libvirtd" "vboxusers" "kvm" "adbusers" "input" "pcscd" "plugdev" ]; # Enable ‘sudo’ for the user.
     packages = with pkgs; [
       tree
       steghide
@@ -384,6 +384,7 @@
     mirakc-arib
     roswell-overlay
     jdim
+    microsandbox
   ];
 
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
