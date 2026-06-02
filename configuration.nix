@@ -215,7 +215,7 @@
   };
 
   programs.nix-ld.enable = true;
-  # programs.nix-ld.libraries = with pkgs; [
+  programs.nix-ld.libraries = with pkgs; [
   #   stdenv.cc.cc.lib
   #   zlib
   #   zstd
@@ -232,7 +232,7 @@
   #   systemd
   #   cairo
   #   mesa
-  # ];
+  ];
 
   services.clamav.daemon.enable = true;
   services.clamav.updater.enable = true;
@@ -460,7 +460,7 @@
   # and migrated your data accordingly.
   #
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
-  system.stateVersion = "25.11"; # Did you read the comment?
+  system.stateVersion = "26.05"; # Did you read the comment?
 
 }
 
