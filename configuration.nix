@@ -3,7 +3,6 @@
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
 { config, lib, pkgs, ... }:
-
 {
   imports =
     [ # Include the results of the hardware scan.
@@ -22,14 +21,22 @@
         canTouchEfiVariables = true;
         efiSysMountPoint = "/boot/efi";
     };
-    grub = {
-        enable = true;
-        efiSupport = true;
-        device = "nodev";
+    limine = {
+      enable = true;
+      efiSupport = true;
+      secureBoot.enable = true;
+      style.wallpapers = [ "/etc/nixos/pictures/limine_wallpaper.png" ];
+      style.wallpaperStyle = "centered";
     };
+    grub.enable = false;
+#     grub = {
+#         enable = true;
+#         efiSupport = true;
+#         device = "nodev";
+#     };
   };
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-  # boot.kernelPackages = pkgs.linuxPackages;
+  # boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxPackages;
   boot.kernelParams = [ 
     # "kvm.enable_virt_at_load=0"
     "amd_iommu=on"
@@ -108,7 +115,7 @@
   # Enable the GNOME Desktop Environment.
   # services.xserver.displayManager.gdm.enable = true;
   # services.xserver.desktopManager.gnome.enable = true;
-  # services.desktopManager.plasma6.enable = true;
+  services.desktopManager.plasma6.enable = true;
   # services.displayManager.plasma-login-manager = {
   #   enable = true;
   # };
@@ -183,6 +190,7 @@
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
   programs.virt-manager.enable = true;
+  services.spice-vdagentd.enable = true;
   users.groups.libvirtd.members = [ "user" ];
   virtualisation.libvirtd.enable = true;
   virtualisation.libvirtd.qemu = {
@@ -192,8 +200,8 @@
   virtualisation.docker = {
       enable = true;
   };
-  virtualisation.virtualbox.host.enable = true;
-  users.extraGroups.vboxusers.members = [ "user" ];
+  # virtualisation.virtualbox.host.enable = true;
+  # users.extraGroups.vboxusers.members = [ "user" ];
 
   security.polkit.enable = true;
   services.flatpak.enable = true;
@@ -206,13 +214,13 @@
   # services.gnome.gnome-keyring.enable = true;
 
   # security.apparmor.packages = with pkgs; [ apparmor-profiles ];
-  security.apparmor = {
-    enable = true;
-    killUnconfinedConfinables = true;
-    policies.firefox.path = "${pkgs.apparmor-profiles}/etc/apparmor.d/firefox";
-    policies.thunderbird.path = "${pkgs.apparmor-profiles}/etc/apparmor.d/thunderbird";
-    policies.flatpak.path = "${pkgs.apparmor-profiles}/etc/apparmor.d/flatpak";
-  };
+#   security.apparmor = {
+#     enable = true;
+#     killUnconfinedConfinables = true;
+#     policies.firefox.path = "${pkgs.apparmor-profiles}/etc/apparmor.d/firefox";
+#     policies.thunderbird.path = "${pkgs.apparmor-profiles}/etc/apparmor.d/thunderbird";
+#     policies.flatpak.path = "${pkgs.apparmor-profiles}/etc/apparmor.d/flatpak";
+#   };
 
   programs.nix-ld.enable = true;
   programs.nix-ld.libraries = with pkgs; [
@@ -237,6 +245,8 @@
   services.clamav.daemon.enable = true;
   services.clamav.updater.enable = true;
 
+  services.guix.enable = true;
+
   services.pcscd = {
     enable = true;
   };
@@ -248,7 +258,7 @@
 
   nixpkgs.config.allowUnfree = true;
   hardware.enableRedistributableFirmware = true;
-  nixpkgs.overlays = [ (import /home/user/Documents/my_overlay/overlay.nix)  ];
+  # nixpkgs.overlays = [ (import /home/user/Documents/my_overlay/overlay.nix)  ];
 
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
@@ -261,6 +271,7 @@
     gh
     _7zz
     p7zip
+    virtiofsd
     git
     keepassxc
     vlc
@@ -317,7 +328,7 @@
     (sddm-astronaut.override {
     embeddedTheme = "hyprland_kath";    
     themeConfig = {
-        Background = "${builtins.path { path = /home/user/Pictures/wallpaper.png; name = "wallpaper"; }}";
+        Background = "${builtins.path { path = ./pictures/login_manager_wallpaper.jpg; name = "wallpaper"; }}";
     #    Font = "";
     };
     })
@@ -375,6 +386,11 @@
     win2xcur
     cabextract
     davinci-resolve
+    python3
+    sbctl
+    efibootmgr
+    file
+    binutils
 
     # my overlay
     libaribb25-tsukumijima
