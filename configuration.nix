@@ -35,8 +35,8 @@
 #         device = "nodev";
 #     };
   };
-  # boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.kernelPackages = pkgs.linuxPackages;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+  # boot.kernelPackages = pkgs.linuxPackages;
   boot.kernelParams = [ 
     # "kvm.enable_virt_at_load=0"
     "amd_iommu=on"
@@ -177,7 +177,7 @@
   programs.firefox.enable = true;
   programs.hyprland = {
     enable = true;
-    # withUWSM = true;
+    withUWSM = true;
   };
   programs.steam = {
     enable = true;
@@ -195,6 +195,7 @@
   virtualisation.libvirtd.enable = true;
   virtualisation.libvirtd.qemu = {
     swtpm.enable = true;
+    vhostUserPackages = [ pkgs.virtiofsd ];
   };
   virtualisation.spiceUSBRedirection.enable = true;
   virtualisation.docker = {
@@ -224,22 +225,86 @@
 
   programs.nix-ld.enable = true;
   programs.nix-ld.libraries = with pkgs; [
-  #   stdenv.cc.cc.lib
-  #   zlib
-  #   zstd
-  #   curl
-  #   openssl
-  #   attr
-  #   libssh
-  #   bzip2
-  #   libxml2
-  #   acl
-  #   libsodium
-  #   util-linux
-  #   xz
-  #   systemd
-  #   cairo
-  #   mesa
+      stdenv.cc.cc.lib
+      zlib
+
+      alsa-lib
+      libpulseaudio
+
+      iconv
+      freetype
+      fontconfig 
+
+      zstd
+
+      curl
+      openssl
+
+      attr
+      libssh
+      bzip2
+      libxml2
+      acl
+      libsodium
+      util-linux
+      xz
+      systemd
+      harfbuzz
+
+      mesa
+
+      dbus
+      expat
+
+      fribidi
+      libtiff
+      libpng
+      libjpeg
+      freeglut
+
+      atk
+      glib
+      gtk3
+      pango
+      gdk-pixbuf
+      cairo
+
+      gmp
+
+      libX11
+      libXt
+      libXmu
+      libXrandr
+      libXcursor
+      libXrender
+      libXi
+      libXext
+      libXfixes
+      libXtst
+      libXcomposite
+      libXdamage
+      libxshmfence
+      libSM
+      libICE
+      libxkbcommon
+      xcbutilwm
+      xcbutil
+      xcbutilimage
+      xcbutilkeysyms
+      xcbutilrenderutil
+
+      libsamplerate
+      flac
+      libogg
+      libvorbis
+
+      libGL
+
+      nss
+      nspr
+
+      fuse
+      e2fsprogs
   ];
 
   services.clamav.daemon.enable = true;
@@ -350,7 +415,7 @@
     android-tools
     mkvtoolnix
     mediainfo
-    ((ffmpeg_8-full.override { withUnfree = true; withGPL = true; }).overrideAttrs (_: { doCheck = false; }))
+    ((ffmpeg-full.override { withUnfree = true; withGPL = true; }).overrideAttrs (_: { doCheck = false; }))
     guile
     protonup-qt
     protonplus
@@ -358,7 +423,6 @@
     nix-prefetch-git
     nix-prefetch-github
     multimarkdown
-    gemini-cli
     gnome-disk-utility
     unityhub
     wireshark
@@ -391,6 +455,8 @@
     efibootmgr
     file
     binutils
+    passt
+    patchelf
 
     # my overlay
     libaribb25-tsukumijima
