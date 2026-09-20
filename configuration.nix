@@ -13,6 +13,11 @@
      experimental-features = [ "nix-command" "flakes" ];
   };
 
+  swapDevices = [{
+    device = "/var/lib/swapfile";
+    size = 32 * 1024;
+  }];
+
   # Use the systemd-boot EFI boot loader.
   # boot.loader.systemd-boot.enable = true;
 
@@ -24,7 +29,7 @@
     limine = {
       enable = true;
       efiSupport = true;
-      secureBoot.enable = true;
+      # secureBoot.enable = true;
       style.wallpapers = [ "/etc/nixos/pictures/limine_wallpaper.png" ];
       style.wallpaperStyle = "centered";
     };
@@ -175,6 +180,7 @@
 
   programs.chromium.enable = true;
   programs.firefox.enable = true;
+  programs.firefox.policies.SecurityDevices.p11-kit-proxy = "${pkgs.p11-kit}/lib/p11-kit-proxy.so";
   programs.hyprland = {
     enable = true;
     withUWSM = true;
@@ -393,7 +399,7 @@
     (sddm-astronaut.override {
     embeddedTheme = "hyprland_kath";    
     themeConfig = {
-        Background = "${builtins.path { path = ./pictures/login_manager_wallpaper.jpg; name = "wallpaper"; }}";
+        Background = "${builtins.path { path = ./pictures/wallpaper_sddm.png; name = "wallpaper"; }}";
     #    Font = "";
     };
     })
@@ -459,14 +465,14 @@
     patchelf
 
     # my overlay
-    libaribb25-tsukumijima
-    recisdb
-    edcb
-    mirakc
-    mirakc-arib
-    roswell-overlay
-    jdim
-    microsandbox
+    # libaribb25-tsukumijima
+    # recisdb
+    # edcb
+    # mirakc
+    # mirakc-arib
+    # roswell-overlay
+    # jdim
+    # microsandbox
   ];
 
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
