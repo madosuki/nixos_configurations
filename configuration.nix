@@ -180,7 +180,7 @@
 
   programs.chromium.enable = true;
   programs.firefox.enable = true;
-  programs.firefox.policies.SecurityDevices.p11-kit-proxy = "${pkgs.p11-kit}/lib/p11-kit-proxy.so";
+  # programs.firefox.policies.SecurityDevices.p11-kit-proxy = "${pkgs.p11-kit}/lib/p11-kit-proxy.so";
   programs.hyprland = {
     enable = true;
     withUWSM = true;
@@ -331,6 +331,10 @@
   hardware.enableRedistributableFirmware = true;
   # nixpkgs.overlays = [ (import /home/user/Documents/my_overlay/overlay.nix)  ];
 
+  environment.etc."pkcs11/modules/opensc-pkcs11".text = ''
+    module: ${pkgs.opensc}/lib/opensc-pkcs11.so
+  '';
+
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
   environment.systemPackages = with pkgs; [
@@ -365,6 +369,7 @@
     kdePackages.qt6ct
     kdePackages.kwallet
     kdePackages.kwalletmanager
+    kdePackages.kwallet-pam
     pcmanfm
     adwaita-icon-theme
     (chromium.override {
@@ -443,19 +448,21 @@
     # })
     libsixel
     pcsc-tools
+    opensc
+    p11-kit
     fastfetch
     usbutils
     v4l-utils
     nkf
     sqlite
     openmsx
-    keybase-gui
+    # keybase-gui
     libretro.fbneo
     retroarch
     rar
     win2xcur
     cabextract
-    davinci-resolve
+    # davinci-resolve
     python3
     sbctl
     efibootmgr
