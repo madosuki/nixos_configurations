@@ -139,6 +139,7 @@
         };
       };
   };
+  security.pam.services.sddm.kwallet.enable = true;
 
   # Configure keymap in X11
   services.xserver.xkb.layout = "us";
@@ -375,6 +376,7 @@
     (chromium.override {
     enableWideVine = true;
     commandLineArgs = [
+    "--password-store=kwallet6"
     # "--ozone-platform=x11"
     # "--force-device-scale=1"
     ];
