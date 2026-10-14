@@ -98,7 +98,8 @@
       noto-fonts-cjk-serif
       noto-fonts-color-emoji
       font-awesome
-      # hackgen-font
+      symbola
+      hackgen-font
     ];
  
     fontDir.enable = true;
@@ -108,6 +109,7 @@
       defaultFonts = {
         serif = [ "Noto Serif CJK JP" ];
         sansSerif = [ "Noto Sans CJK JP" ];
+        # monospace = [ "Noto Sans Mono CJK JP" ];
       };
     };
   };
@@ -330,11 +332,14 @@
 
   nixpkgs.config.allowUnfree = true;
   hardware.enableRedistributableFirmware = true;
-  # nixpkgs.overlays = [ (import /home/user/Documents/my_overlay/overlay.nix)  ];
+  nixpkgs.overlays = [ (import /home/user/Documents/my_overlay/overlay.nix)  ];
 
   environment.etc."pkcs11/modules/opensc-pkcs11".text = ''
     module: ${pkgs.opensc}/lib/opensc-pkcs11.so
   '';
+  environment.sessionVariables = {
+    KWIN_FORCE_SW_CURSOR = "1";
+  };
 
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
@@ -371,6 +376,7 @@
     kdePackages.kwallet
     kdePackages.kwalletmanager
     kdePackages.kwallet-pam
+    kdePackages.kdenlive
     pcmanfm
     adwaita-icon-theme
     (chromium.override {
@@ -390,8 +396,11 @@
     xsel
     wl-clipboard
     emacs-pgtk
+
+    blender
     gimp
     inkscape
+
     vscodium
     clamav
     imagemagick
@@ -412,7 +421,7 @@
     })
     evince
     zip
-    unzip
+    unzipNLS
     texliveFull
     thunderbird
     nil
@@ -423,16 +432,23 @@
     spotify
     psmisc
     steam-run
+
     android-file-transfer
     android-studio
     android-tools
+
     mkvtoolnix
     mediainfo
     ((ffmpeg-full.override { withUnfree = true; withGPL = true; }).overrideAttrs (_: { doCheck = false; }))
+    
+    libva-utils
+    vulkan-tools
+
     guile
+
     protonup-qt
     protonplus
-    rhythmbox
+
     nix-prefetch-git
     nix-prefetch-github
     multimarkdown
@@ -459,8 +475,11 @@
     sqlite
     openmsx
     # keybase-gui
-    libretro.fbneo
-    retroarch
+    # libretro.fbneo
+    # retroarch
+    (retroarch.withCores (cores: with cores; [
+      fbneo
+    ]))
     rar
     win2xcur
     cabextract
@@ -472,6 +491,10 @@
     binutils
     passt
     patchelf
+    discord
+
+    # bitwig-studio
+    # reaper
 
     # my overlay
     # libaribb25-tsukumijima
@@ -479,8 +502,8 @@
     # edcb
     # mirakc
     # mirakc-arib
-    # roswell-overlay
-    # jdim
+    roswell-overlay
+    jdim
     # microsandbox
   ];
 
