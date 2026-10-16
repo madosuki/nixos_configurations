@@ -13,6 +13,11 @@
      experimental-features = [ "nix-command" "flakes" ];
   };
 
+  environment.etc."crypttab".text = ''
+    SECOND UUID=d7051408-9db6-429e-a254-59c6fd3f47fd /root/keyfile_for_luks.key
+    THIRD UUID=060d42f8-bc37-4d2f-97ca-8637e34fe1d0 /root/keyfile_for_luks.key
+  '';
+
   swapDevices = [{
     device = "/var/lib/swapfile";
     size = 32 * 1024;
@@ -396,6 +401,9 @@
     xsel
     wl-clipboard
     emacs-pgtk
+
+    parted
+    gptfdisk
 
     blender
     gimp
